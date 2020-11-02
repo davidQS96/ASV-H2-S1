@@ -3,48 +3,34 @@ import cv2
 import matplotlib.pyplot as plt
 from scipy import ndimage as ndi
 from skimage import io
-import Herramientas.imageAnalisis as ima
-
 
 #Inicialización de imagen
-imagecol = cv2.imread('Imagenes\\Screenshots reducidas\\0.10.png')
+
+imagecol = cv2.imread('bolt1.jpg') 
 marker = np.zeros_like(imagecol)
 hsv = cv2.cvtColor(imagecol, cv2.COLOR_BGR2HSV)
-
-ima.showImage(imagecol, "imagecol")
-ima.showImage(hsv, "hsv")
 
 #Parte cesped
 
 #Segmatación por matriz
 lower_blue = np.array([30, 70, 50])
-print(lower_blue)
 upper_blue = np.array([60,130,200])
 mask1 = cv2.inRange(hsv,lower_blue,upper_blue)
-
-ima.showImage(mask1, "mask1")
-
 contours, _ = cv2.findContours(mask1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-#Deteción de contornos
-cv2.drawContours(marker, contours, -1, (255, 255, 255), 5)
+
+#Deteción de contronos
+cv2.drawContours(marker,contours, -1, (255, 255, 255), 5)
 h, w = marker.shape[:2]
 maskll = np.zeros((h+2, w+2), np.uint8)
+ 
 
-ima.showImage(marker, "marker")
-
-
-#Relleno de contornos
+#Relleno de contornos      
 img_pl = np.zeros_like(imagecol)
-cv2.fillPoly(img_pl, pts = contours, color = (255,255,255))
-
-ima.showImage(img_pl, "image_pl")
-
+cv2.fillPoly(img_pl,pts=contours,color=(255,255,255))
 #img_pl = ~img_pl
 alt = img_pl.copy()
-cv2.floodFill(img_pl, maskll, (0, 0), 255);
-
-ima.showImage(img_pl, "image_pl2")
+cv2.floodFill(img_pl, maskll, (0,0), 255);
 
 
 #Relleno de huecos
@@ -66,7 +52,7 @@ contours, _ = cv2.findContours(mask2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 cv2.drawContours(marker,contours, -1, (255, 255, 255), 5)
 h, w = marker.shape[:2]
 maskll = np.zeros((h+2, w+2), np.uint8)
-
+       
 img_pl = np.zeros_like(imagecol)
 cv2.fillPoly(img_pl,pts=contours,color=(255,255,255))
 #img_pl = ~img_pl
@@ -99,7 +85,3 @@ final[:,:,2] = final[:,:,2]*mask
 contours, _ = cv2.findContours(mask1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 plt.imshow(final,cmap='gray',vmin=0,vmax=255)
 io.imsave('imagen.png',final)
-
-
-cv2.waitKey(0)
-cv2.destroyAllWindows()
