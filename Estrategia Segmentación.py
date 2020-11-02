@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 #Inicialización de imagen
 
-imagecol = cv2.imread('bolt1.jpg')
+imagecol = cv2.imread('bolt1.png')
 result = imagecol.copy()
 gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
 marker = np.zeros_like(imagecol)
